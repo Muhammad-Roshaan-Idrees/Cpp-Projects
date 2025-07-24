@@ -4,7 +4,7 @@
 #include <cctype> 
 using namespace std;
 
-// Color codes for console styling - Let's make our program colorful and fun!
+// Color codes for console styling 
 #define RESET "\033[0m"
 #define RED "\033[31m"
 #define BLUE "\033[34m"
