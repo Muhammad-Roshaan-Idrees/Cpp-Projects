@@ -2,17 +2,17 @@
 #include <fstream>
 #include <string>
 #include <limits>
-#include <windows.h> // For Sleep and color (optional, can be removed for portability)
+#include <windows.h>
 
 using namespace std;
 
-class Student {
+class Student
+{
 public:
     string name;
     int id;
     string branch;
 
-    // Default constructor
     Student() : id(0) {}
 };
 
@@ -25,10 +25,11 @@ void clearRecord();
 
 int choice;
 
-void menu() {
-    system("cls"); // Optional: Clears console (Windows-specific)
-    Sleep(100);    // Optional: Adds a small delay
-    system("color 0b"); // Optional: Sets console color (Windows-specific)
+void menu()
+{
+    system("cls");
+    Sleep(100);
+    system("color 0b");
     cout << "\n\t---Student Management System---\n\n";
     cout << "1. View record\n";
     cout << "2. Add student data\n";
@@ -39,20 +40,30 @@ void menu() {
     cout << "Enter your choice: ";
     cin >> choice;
 
-    // Clear input buffer to avoid issues with next input
     cin.ignore(numeric_limits<streamsize>::max(), '\n');
-    system("cls"); // Clear screen after input for better UX
-    switch (choice) {
-        case 1: viewRecord(); break;
-        case 2: addStudentData(); break;
-        case 3: removeStudentData(); break;
-        case 4: updateStudentData(); break;
-        case 5: clearRecord(); break;
-        case 6:
-            system("color 0f"); // Reset color (Windows-specific)
-            exit(0);
-        default:
-            cout << "\n\tInvalid choice...\n";
+    system("cls");
+    switch (choice)
+    {
+    case 1:
+        viewRecord();
+        break;
+    case 2:
+        addStudentData();
+        break;
+    case 3:
+        removeStudentData();
+        break;
+    case 4:
+        updateStudentData();
+        break;
+    case 5:
+        clearRecord();
+        break;
+    case 6:
+        system("color 0f");
+        exit(0);
+    default:
+        cout << "\n\tInvalid choice...\n";
     }
 
     cout << "\n\nPress Enter to continue...";
@@ -60,10 +71,12 @@ void menu() {
     menu();
 }
 
-void addStudentData() {
+void addStudentData()
+{
     Student s;
     ofstream outFile("Student_record.bin", ios::binary | ios::app);
-    if (!outFile) {
+    if (!outFile)
+    {
         cout << "\n\tERROR 404...\n";
         return;
     }
@@ -76,37 +89,43 @@ void addStudentData() {
     cout << "Branch  : ";
     getline(cin, s.branch);
 
-    outFile.write(reinterpret_cast<char*>(&s), sizeof(s));
+    outFile.write(reinterpret_cast<char *>(&s), sizeof(s));
     outFile.close();
     cout << "\nStudent data added successfully!\n";
 }
 
-void viewRecord() {
+void viewRecord()
+{
     Student s;
     ifstream inFile("Student_record.bin", ios::binary);
     bool found = false;
-    if (!inFile) {
+    if (!inFile)
+    {
         cout << "\n\tERROR 404...\n";
         return;
     }
     cout << "\n\t---View Record---\n\n";
-    while (inFile.read(reinterpret_cast<char*>(&s), sizeof(s))) {
+    while (inFile.read(reinterpret_cast<char *>(&s), sizeof(s)))
+    {
         cout << "Name    : " << s.name << "\nId      : " << s.id << "\nBranch  : " << s.branch << "\n-----------------------\n";
         found = true;
     }
-    if (!found) {
+    if (!found)
+    {
         cout << "No record found...\n";
     }
     inFile.close();
 }
 
-void removeStudentData() {
+void removeStudentData()
+{
     Student s;
     ifstream inFile("Student_record.bin", ios::binary);
     ofstream outFile("temp.bin", ios::binary);
     int id, found = 0;
 
-    if (!inFile || !outFile) {
+    if (!inFile || !outFile)
+    {
         cout << "\n\tERROR 404...\n";
         return;
     }
@@ -115,19 +134,24 @@ void removeStudentData() {
     cin >> id;
     cin.ignore();
 
-    while (inFile.read(reinterpret_cast<char*>(&s), sizeof(s))) {
-        if (s.id != id) {
-            outFile.write(reinterpret_cast<char*>(&s), sizeof(s));
-        } else {
+    while (inFile.read(reinterpret_cast<char *>(&s), sizeof(s)))
+    {
+        if (s.id != id)
+        {
+            outFile.write(reinterpret_cast<char *>(&s), sizeof(s));
+        }
+        else
+        {
             found = 1;
         }
     }
     inFile.close();
     outFile.close();
 
-    if (!found) {
+    if (!found)
+    {
         cout << "\nSorry record not found :(\n";
-        remove("temp.bin"); // Clean up temp file
+        remove("temp.bin");
         return;
     }
 
@@ -136,12 +160,14 @@ void removeStudentData() {
     cout << "\nRecord is successfully deleted :)\n";
 }
 
-void updateStudentData() {
+void updateStudentData()
+{
     Student s;
     fstream file("Student_record.bin", ios::binary | ios::in | ios::out);
     int id, found = 0;
 
-    if (!file) {
+    if (!file)
+    {
         cout << "\n\tERROR 404...\n";
         return;
     }
@@ -150,13 +176,16 @@ void updateStudentData() {
     cin >> id;
     cin.ignore();
 
-    while (file.read(reinterpret_cast<char*>(&s), sizeof(s))) {
-        if (s.id == id) {
+    while (file.read(reinterpret_cast<char *>(&s), sizeof(s)))
+    {
+        if (s.id == id)
+        {
             found = 1;
             break;
         }
     }
-    if (!found) {
+    if (!found)
+    {
         cout << "\nSorry record not found :(\n";
         file.close();
         return;
@@ -172,14 +201,16 @@ void updateStudentData() {
     cout << "Branch  : ";
     getline(cin, s.branch);
 
-    file.write(reinterpret_cast<char*>(&s), sizeof(s));
+    file.write(reinterpret_cast<char *>(&s), sizeof(s));
     file.close();
     cout << "\nStudent details updated successfully..\n";
 }
 
-void clearRecord() {
+void clearRecord()
+{
     ofstream file("Student_record.bin", ios::trunc);
-    if (!file) {
+    if (!file)
+    {
         cout << "\n\tERROR 404...\n";
         return;
     }
@@ -188,7 +219,8 @@ void clearRecord() {
     cout << "Record deleted successfully...\n";
 }
 
-int main() {
+int main()
+{
     menu();
     return 0;
 }
